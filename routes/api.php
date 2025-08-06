@@ -27,7 +27,10 @@ Route::middleware("auth:sanctum")->group(function () {
 
     // Company Routes
     Route::apiResource("companies", CompanyController::class);
+    Route::get("company/{company}", [CompanyController::class, "show"]);
     Route::get("/my-companies", [CompanyController::class, "myCompanies"]);
+    Route::post("/company/{company}/add-owner", [CompanyController::class, "addOwners"]);
+
 
     // Job Routes (only authenticated users can create, update, delete)
     Route::post("/jobs", [JobController::class, "store"]);

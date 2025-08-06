@@ -109,4 +109,66 @@ class CompanyController extends Controller
             "data" => $companies
         ]);
     }
+
+    public function addOwner(Request $request, Company $company)
+    {
+        if (!Auth::user()->ownedCompanies->contains($company->id)) {
+            return response()->json(['success' => false, 'message' => 'Not authorized.'], 403);
+        }
+        $request->validate(['user_id' => 'required|exists:users,id']);
+        $company->owners()->syncWithoutDetaching([$request->user_id]);
+        return response()->json(['success' => true, 'message' => 'Owner added.']);
+    }
+
+    public function addOwners(Request $request, Company $company)
+    {
+        // Check if current user is an owner of the company (primary or secondary)
+        if (!$company->owners()->where("user_id", Auth::id())->exists()) {
+            return response()->json([
+                "success" => false,
+                "message" => "You are not authorized to add owners to this company."
+            ], 403);
+        }
+
+        $request->validate([
+            "user_id" => "required|exists:users,id",
+            "email" => "sometimes|email|exists:users,email", // Alternative way to identify user
+        ]);
+
+        // Get user ID from email if provided instead of user_id
+        $userId = $request->user_id;
+        if ($request->has('email') && !$request->has('user_id')) {
+            $user = User::where('email', $request->email)->first();
+            $userId = $user->id;
+        }
+
+        // Check if user is already an owner
+        if ($company->owners()->where("user_id", $userId)->exists()) {
+            return response()->json([
+                "success" => false,
+                "message" => "User is already an owner of this company."
+            ], 400);
+        }
+
+        // Add user as a secondary owner (not primary)
+        $company->owners()->attach($userId, ["is_primary" => false]);
+
+        // Load the user to return their info
+        $user = User::find($userId);
+
+        return response()->json([
+            "success" => true,
+            "message" => "User '{$user->name}' has been added as a company owner successfully.",
+            "data" => [
+                "company" => $company->name,
+                "new_owner" => [
+                    "id" => $user->id,
+                    "name" => $user->name,
+                    "email" => $user->email,
+                    "is_primary" => false
+                ]
+            ]
+        ]);
+    }
+
 }

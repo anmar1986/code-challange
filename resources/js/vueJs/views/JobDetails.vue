@@ -4,16 +4,40 @@
             <h2 class="text-3xl font-extrabold text-gray-900 text-center mb-8">
                 Job Details
             </h2>
-            <p class="text-center text-gray-600">Loading job details...</p>
-            <!-- This is a placeholder. We will add actual logic here later. -->
+            <p class="text-center text-gray-600" v-show="loading">Loading job details...</p>
+            <div v-if="job">
+                <h3 class="text-2xl font-bold mb-4">{{ job.title }}</h3>
+                <p class="text-gray-700 mb-4">{{ job.description }}</p>
+                <p class="text-gray-700 mb-4">{{ job.salary_min }} - {{  job.salary_max }}</p>
+                <p class="text-gray-700 mb-4">{{ job.requirements }}</p>
+                <p class="text-gray-500">Company: {{ job.company.name }}</p>
+                <p class="text-gray-500">Location: {{ job.location }}</p>
+            </div>
         </div>
     </div>
 </template>
 
 <script setup>
-// You can add script logic here later
-</script>
+import { ref, onMounted } from 'vue';
+import axios from 'axios';
+import { useRoute } from 'vue-router';
+const route = useRoute();
+const job = ref(null);
+const loading = ref(true);
+const fetchJobDetails = async () => {
+    loading.value = true;
+    try {
+        const response = await axios.get(`/api/jobs/${route.params.id}`);
+        job.value = response.data.data;
+    } catch (error) {
+        console.error("Error fetching job details:", error);
+    } finally {
+        loading.value = false;
+    }
+};
+onMounted(() => {
+    fetchJobDetails();
+});
 
-<style scoped>
-/* Add specific styles for JobDetails.vue if needed */
-</style>
+</script>
+ 

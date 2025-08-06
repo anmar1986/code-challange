@@ -6,7 +6,7 @@
             </h2>
 
             <div class="mb-6 text-right">
-                <router-link to="/create-company" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                <router-link to="/create-company" style="background-color: blue;" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
                     Create New Company
                 </router-link>
             </div>
@@ -33,7 +33,7 @@
                     <p class="text-gray-700 text-sm line-clamp-3 mb-4">{{ company.description }}</p>
                     <div class="flex justify-between items-center">
                         <span class="text-sm text-gray-500">Jobs Posted: {{ company.jobs_count }}</span>
-                        <router-link :to="`/companies/${company.id}`" class="text-blue-600 hover:underline text-sm">View Details</router-link>
+                        <router-link :to="`/company/${company.id}`" class="text-blue-600 hover:underline text-sm">View Details</router-link>
                     </div>
                 </div>
             </div>

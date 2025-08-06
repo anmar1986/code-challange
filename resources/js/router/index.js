@@ -29,6 +29,24 @@ const routes = [
         component: () => import("../vueJs/views/MyCompanies.vue"), 
         meta: { requiresAuth: true },
     },
+    {
+        path: '/create-company',
+        name: 'createCompany',
+        component: () => import("../vueJs/views/CreateCompany.vue"), 
+        meta: { requiresAuth: true },
+    },
+    {
+        path: '/job/:id',
+        name: 'JobDetails',
+        component: () => import("../vueJs/views/JobDetails.vue"), 
+        meta: { requiresAuth: true },
+    },
+    {
+        path: '/company/:id',
+        name: 'CompanyDetails',
+        component: () => import("../vueJs/views/CompanyDetails.vue"), 
+        meta: { requiresAuth: true },
+    },
 ];
 
 const router = createRouter({
@@ -47,3 +65,4 @@ router.beforeEach((to, from, next) => {
 });
 
 export default router;
+ 
